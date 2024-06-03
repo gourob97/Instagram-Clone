@@ -12,7 +12,6 @@ struct LoginView: View {
     @State private var password = ""
     
     @State private var showLanguageChoices = false
-    @State private var showSettings = false
     
     @FocusState private var isEmailFocused: Bool
     @FocusState private var isPasswordFocused: Bool
@@ -95,7 +94,7 @@ struct LoginView: View {
                         .tint(.primary)
                     
                     Button {
-                        showSettings = true
+                        
                     } label: {
                         Text("login-string".localized(language))
                             .font(Font.instaMedium())
@@ -153,9 +152,6 @@ struct LoginView: View {
             Text("Language list here")
                 .presentationContentInteraction(.scrolls)
                 .presentationDetents([.medium, .large])
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
         }
     }
 }
