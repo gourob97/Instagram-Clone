@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject private var authenticationVM: AuthenticationViewModel
+    
     @State private var email = ""
     @State private var password = ""
     
     @State private var showLanguageChoices = false
+    @State private var showHomeScreen = false
     
     @FocusState private var isEmailFocused: Bool
     @FocusState private var isPasswordFocused: Bool
+    
     
     @AppStorage("language")
     private var language = LocalizationService.shared.language
@@ -73,7 +77,7 @@ struct LoginView: View {
                         .focused($isEmailFocused)
                         .tint(.primary)
                         .keyboardType(.emailAddress)
-                        
+                    
                     
                     
                     SecureField("password-string".localized(language), text: $password)
@@ -94,7 +98,9 @@ struct LoginView: View {
                         .tint(.primary)
                     
                     Button {
-                        
+                        Task {
+                            await authenticationVM.logIn(email: email, password: password)
+                        }
                     } label: {
                         Text("login-string".localized(language))
                             .font(Font.instaMedium())
@@ -138,7 +144,7 @@ struct LoginView: View {
                     HStack {
                         Image(systemName: "infinity")
                         Text("Meta")
-                            
+                        
                     }
                     .font(Font.instaMedium())
                 }
@@ -147,7 +153,6 @@ struct LoginView: View {
             }
             .ignoresSafeArea(.keyboard)
         }
-        
         .sheet(isPresented: $showLanguageChoices ) {
             Text("Language list here")
                 .presentationContentInteraction(.scrolls)
@@ -159,4 +164,5 @@ struct LoginView: View {
 #Preview {
     LoginView()
         .environment(\.locale, Locale.init(identifier: "en"))
+        .environmentObject(AuthenticationViewModel())
 }
